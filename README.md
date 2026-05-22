@@ -20,7 +20,7 @@ Preserves layout, headings, and **tables** automatically. Perfect for digitizing
 
 ## 🚀 Try It Online
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://your-app-name.streamlit.app)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://convert-to-words-bia.streamlit.app/)
 
 > **Link:** [Open AI Document Digitizer Pro](https://your-app-name.streamlit.app)
 
