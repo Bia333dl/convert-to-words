@@ -2,11 +2,53 @@
 
 **Convert scanned PDFs & images into clean, well-structured Word documents** — powered by **Google Gemini AI**.
 
-Preserves layout, headings, and **tables** automatically. Perfect for digitizing old documents, invoices, reports, books, and forms.
+Perfect for digitizing old documents, invoices, reports, books, and forms.
 
-![Demo](https://via.placeholder.com/800x400?text=App+Demo+Screenshot)  
-*(Add your actual screenshot here)*
+# 📄 AI Document Digitizer Pro
 
+**Convert scanned PDFs & images into clean, well-structured Word documents** using Google Gemini AI.
+
+---
+
+## ✨ Features
+- Bilingual interface (English + Vietnamese)
+- Preserves headings and tables
+- Combine multiple images into PDF
+- No installation required
+
+## 🚀 How to Use
+
+### 1. Get Your Free Gemini API Key
+
+**English:**
+1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Sign in with your Google account
+3. Click **"Create API key"**
+4. Copy the generated key
+5. Paste it into the app
+
+**Tiếng Việt:**
+1. Truy cập [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Đăng nhập tài khoản Google
+3. Nhấn **"Create API key"**
+4. Sao chép key
+5. Dán vào ứng dụng
+
+### 2. Start Using
+- Paste your API Key
+- Upload scanned PDF or images
+- Click **"Start AI Digitization"**
+- Download the formatted Word file
+
+---
+
+## Try Online
+
+[![Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://convert-to-words-bia.streamlit.app)
+
+---
+
+**Made with ❤️ for easy document digitization**
 ---
 
 ## ✨ Features
@@ -26,16 +68,6 @@ Preserves layout, headings, and **tables** automatically. Perfect for digitizing
 
 ---
 
-## 📋 How to Use
-
-1. **Get your free Gemini API Key** from [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Paste the key into the app
-3. (Optional) Combine multiple scanned images into one PDF
-4. Upload your scanned PDF or image
-5. Click **"Start AI Digitization"**
-6. Download the beautifully structured `.docx` file
-
----
 
 ## 🛠️ Tech Stack
 
@@ -44,7 +76,6 @@ Preserves layout, headings, and **tables** automatically. Perfect for digitizing
 - **python-docx** — Professional Word document generation
 - **pdf2image + img2pdf** — PDF & image handling
 
----
 
 ## 🎯 Perfect For
 
@@ -52,8 +83,6 @@ Preserves layout, headings, and **tables** automatically. Perfect for digitizing
 - Offices converting paper archives
 - Researchers processing scanned documents
 - Anyone tired of manual re-typing
-
----
 
 
 ## ⭐ Support & Feedback
