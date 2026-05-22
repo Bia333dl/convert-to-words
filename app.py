@@ -32,7 +32,7 @@ texts = {
     },
     "vi": {
         "title": "📄 AI Chuyển Đổi Tài Liệu Pro",
-        "subtitle": "Chuyển PDF scan hoặc ảnh → File Word có định dạng đẹp, giữ bảng biểu",
+        "subtitle": "Chuyển PDF scan hoặc ảnh, chữ viết tay → File Word",
         "api_label": "Nhập Gemini API Key của bạn",
         "step1": "Bước 1: Ghép nhiều ảnh thành 1 PDF (Tùy chọn)",
         "upload_images": "Chọn nhiều ảnh để ghép",
