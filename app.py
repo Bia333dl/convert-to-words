@@ -8,13 +8,37 @@ import os
 import tempfile
 import io
 
+# ===================== TABLE FUNCTION (Defined First) =====================
+def add_markdown_table_to_doc(doc, table_lines):
+    """Convert Markdown table to real Word table"""
+    if len(table_lines) < 2:
+        return
+    clean_lines = [line for line in table_lines if '---' not in line]
+    if len(clean_lines) < 1:
+        return
+    header = [cell.strip() for cell in clean_lines[0].split('|')[1:-1]]
+    rows = []
+    for line in clean_lines[2:]:
+        cells = [cell.strip() for cell in line.split('|')[1:-1]]
+        if cells:
+            rows.append(cells)
+    cols = len(header) if header else (len(rows[0]) if rows else 1)
+    table = doc.add_table(rows=1 + len(rows), cols=cols)
+    table.style = 'Table Grid'
+    if header:
+        for j, text in enumerate(header):
+            table.cell(0, j).text = text
+    for i, row in enumerate(rows):
+        for j, text in enumerate(row):
+            if j < cols:
+                table.cell(i + 1, j).text = text
+
 # ===================== LANGUAGE SETUP =====================
 if "language" not in st.session_state:
-    st.session_state.language = "vi"  # Default to Vietnamese
+    st.session_state.language = "vi"
 
 lang = st.session_state.language
 
-# Text dictionary
 texts = {
     "en": {
         "title": "📄 AI Document Digitizer Pro",
@@ -32,7 +56,7 @@ texts = {
     },
     "vi": {
         "title": "📄 AI Chuyển Đổi Tài Liệu Pro",
-        "subtitle": "Chuyển PDF scan hoặc ảnh, chữ viết tay → File Word",
+        "subtitle": "Chuyển PDF scan hoặc ảnh → File Word có định dạng đẹp, giữ bảng biểu",
         "api_label": "Nhập Gemini API Key của bạn",
         "step1": "Bước 1: Ghép nhiều ảnh thành 1 PDF (Tùy chọn)",
         "upload_images": "Chọn nhiều ảnh để ghép",
@@ -48,7 +72,6 @@ texts = {
 
 t = texts[lang]
 
-# ===================== UI =====================
 st.set_page_config(page_title=t["title"], layout="centered")
 
 # Language Switcher
@@ -62,16 +85,21 @@ with col2:
 
 st.markdown(f"**{t['subtitle']}**")
 
-# API Key
-api_key = st.text_input(t["api_label"], type="password",
-                       help="Lấy key miễn phí tại https://aistudio.google.com/app/apikey")
+# API Key Guide
+with st.expander("📋 How to Get Gemini API Key / Hướng dẫn lấy API Key", expanded=False):
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("**🇬🇧 English**")
+        st.markdown("1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey)\n2. Sign in\n3. Click Create API key\n4. Copy key")
+    with col2:
+        st.markdown("**🇻🇳 Tiếng Việt**")
+        st.markdown("1. Truy cập [Google AI Studio](https://aistudio.google.com/app/apikey)\n2. Đăng nhập\n3. Nhấn Create API key\n4. Sao chép key")
 
-# === Step 1: Combine Images ===
+api_key = st.text_input(t["api_label"], type="password")
+
+# Step 1: Combine Images
 st.subheader(t["step1"])
-image_files = st.file_uploader(t["upload_images"], 
-                              type=["jpg","jpeg","png","webp"], 
-                              accept_multiple_files=True, 
-                              key="images")
+image_files = st.file_uploader(t["upload_images"], type=["jpg","jpeg","png","webp"], accept_multiple_files=True, key="images")
 
 if st.button(t["create_pdf"]) and image_files:
     with st.spinner("Đang tạo PDF..." if lang == "vi" else "Creating PDF..."):
@@ -83,7 +111,6 @@ if st.button(t["create_pdf"]) and image_files:
                     with open(path, "wb") as f:
                         f.write(img.getbuffer())
                     paths.append(path)
-                
                 pdf_bytes = img2pdf.convert(paths)
                 st.download_button(
                     label=t["download_pdf"],
@@ -93,13 +120,11 @@ if st.button(t["create_pdf"]) and image_files:
                 )
                 st.success("✅ Đã tạo PDF thành công!" if lang == "vi" else "✅ PDF created successfully!")
         except Exception as e:
-            st.error(f"Lỗi: {e}" if lang == "vi" else f"Error: {e}")
+            st.error(str(e))
 
-# === Step 2: Main Tool ===
+# Step 2: Main Tool
 st.subheader(t["step2"])
-uploaded_file = st.file_uploader(t["upload_file"], 
-                                type=["pdf","jpg","jpeg","png","webp"], 
-                                key="main")
+uploaded_file = st.file_uploader(t["upload_file"], type=["pdf","jpg","jpeg","png","webp"], key="main")
 
 if st.button(t["start_btn"], type="primary") and uploaded_file and api_key:
     with st.spinner("Đang xử lý bằng Gemini AI..." if lang == "vi" else "Processing with Gemini AI..."):
@@ -111,50 +136,53 @@ if st.button(t["start_btn"], type="primary") and uploaded_file and api_key:
                 tmp.write(uploaded_file.getbuffer())
                 file_path = tmp.name
 
-# === PDF to Images Conversion ===
-            images_to_process = []
             if suffix == '.pdf':
                 try:
-                    # For Streamlit Cloud (Linux) - no path needed
                     images_to_process = convert_from_path(file_path)
-                except Exception:
-                    # Fallback for Local Windows
+                except:
                     poppler_path = r"E:\python project\convert to word\poppler-24.08.0\Library\bin"
                     images_to_process = convert_from_path(file_path, poppler_path=poppler_path)
             else:
                 images_to_process = [Image.open(file_path)]
 
-            prompt = """Phân tích bố cục tài liệu cẩn thận. Chuyển toàn bộ văn bản sang tiếng Việt và tiếng Anh chính xác. 
-Dùng bảng Markdown cho các bảng. Dùng # ## ### cho tiêu đề."""
+            prompt = "Analyze the document carefully. Preserve original layout. Transcribe all text accurately. Convert tables into proper Markdown table format."
 
             contents = [prompt] + images_to_process
             response = client.models.generate_content(model='gemini-2.5-flash', contents=contents)
             
-            extracted_text = response.text if response and response.text else "Không trích xuất được văn bản."
+            extracted_text = response.text if response and response.text else "No text extracted."
 
             doc = Document()
-            for line in extracted_text.split('\n'):
-                stripped = line.strip()
-                if stripped.startswith('#'):
-                    level = min(stripped.count('#'), 3)
-                    text = stripped.lstrip('# ').strip()
+            lines = extracted_text.splitlines()
+            i = 0
+            while i < len(lines):
+                line = lines[i].strip()
+                if line.startswith('#'):
+                    level = min(line.count('#'), 3)
+                    text = line.lstrip('# ').strip()
                     doc.add_heading(text, level=level)
-                elif stripped:
-                    doc.add_paragraph(stripped)
+                elif line.startswith('|') and len(line) > 10:
+                    table_lines = []
+                    while i < len(lines) and lines[i].strip().startswith('|'):
+                        table_lines.append(lines[i].strip())
+                        i += 1
+                    add_markdown_table_to_doc(doc, table_lines)
+                    continue
+                elif line:
+                    doc.add_paragraph(line)
+                i += 1
 
             bio = io.BytesIO()
             doc.save(bio)
             bio.seek(0)
 
             st.success(t["success"])
-            
             st.download_button(
                 label=t["download_word"],
                 data=bio.getvalue(),
-                file_name=f"{os.path.splitext(uploaded_file.name)[0]}_da_chuyen_doi.docx" if lang == "vi" else f"{os.path.splitext(uploaded_file.name)[0]}_structured.docx",
+                file_name=f"{os.path.splitext(uploaded_file.name)[0]}_structured.docx",
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             )
-
             os.unlink(file_path)
 
         except Exception as e:
