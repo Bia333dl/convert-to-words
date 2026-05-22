@@ -55,11 +55,6 @@ Preserves layout, headings, and **tables** automatically. Perfect for digitizing
 
 ---
 
-## 📸 Screenshots
-
-*(Add 2-3 screenshots here after deployment)*
-
----
 
 ## ⭐ Support & Feedback
 
