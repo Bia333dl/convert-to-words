@@ -65,7 +65,9 @@ Preserves layout, headings, and **tables** automatically. Perfect for digitizing
 
 Found this tool useful? Give it a star! ⭐
 
-Have suggestions or found a bug? Feel free to open an **Issue**.
+Have suggestions or found a bug? Feel free to open an **Issue**
+
+BTC address: bc1q8q2a7tkn2sls85p0ujug3tzveyly98mqtffah6
 
 ---
 
